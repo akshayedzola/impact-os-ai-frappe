@@ -1,8 +1,7 @@
 import frappe
 from frappe import _
-from frappe.utils import now_datetime, get_datetime
-from jose import jwt, JWTError
-from datetime import datetime, timedelta
+import jwt as pyjwt
+from datetime import datetime, timedelta, timezone
 import json
 
 
@@ -13,22 +12,23 @@ def get_jwt_secret():
 def generate_jwt_token(user_email: str, expires_hours: int = 24) -> str:
     """Generate a JWT token for the given user."""
     secret = get_jwt_secret()
+    now = datetime.now(timezone.utc)
     payload = {
         "sub": user_email,
-        "iat": datetime.utcnow(),
-        "exp": datetime.utcnow() + timedelta(hours=expires_hours),
+        "iat": now,
+        "exp": now + timedelta(hours=expires_hours),
         "iss": "impact_os_ai",
     }
-    return jwt.encode(payload, secret, algorithm="HS256")
+    return pyjwt.encode(payload, secret, algorithm="HS256")
 
 
 def verify_jwt_token(token: str) -> dict:
     """Verify a JWT token and return the payload."""
     secret = get_jwt_secret()
     try:
-        payload = jwt.decode(token, secret, algorithms=["HS256"])
+        payload = pyjwt.decode(token, secret, algorithms=["HS256"])
         return payload
-    except JWTError as e:
+    except pyjwt.PyJWTError as e:
         frappe.throw(_("Invalid or expired token: {0}").format(str(e)), frappe.AuthenticationError)
 
 

@@ -53,8 +53,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
-# ── Node 18 via NodeSource ────────────────────────────────────────────────────
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+# ── Node 24 via NodeSource (Frappe v16.12 package.json: "node": ">=24") ──────
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g yarn \
     && rm -rf /var/lib/apt/lists/*
