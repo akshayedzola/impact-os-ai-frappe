@@ -8,7 +8,7 @@ import openai
 def _get_openai_client():
     api_key = frappe.conf.get("openai_api_key", "")
     if not api_key:
-        frappe.throw(_("OpenAI API key is not configured in site_config.json"), frappe.ConfigurationError)
+        frappe.throw(_("OpenAI API key is not configured in site_config.json"), frappe.ValidationError)
     return openai.OpenAI(api_key=api_key)
 
 

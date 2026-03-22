@@ -64,6 +64,14 @@ fi
 
 echo "$SITE_NAME" > sites/currentsite.txt
 
+# ── Start background worker (processes frappe.enqueue jobs) ──────────────────
+echo "==> Starting background worker..."
+bench worker --queue long,default &
+WORKER_PID=$!
+
 # ── Start Frappe ──────────────────────────────────────────────────────────────
 echo "==> Starting Frappe on 0.0.0.0:8000..."
 bench serve --port 8000 --host 0.0.0.0
+
+# If bench serve exits, also kill the worker
+kill $WORKER_PID 2>/dev/null || true

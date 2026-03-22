@@ -19,7 +19,7 @@ SYSTEM_PROMPT = (
 def _get_openai_client():
     api_key = frappe.conf.get("openai_api_key", "")
     if not api_key:
-        frappe.throw(_("OpenAI API key is not configured"), frappe.ConfigurationError)
+        frappe.throw(_("OpenAI API key is not configured"), frappe.ValidationError)
     return openai.OpenAI(api_key=api_key)
 
 
@@ -143,17 +143,22 @@ def ask_about_section(slug: str, section: str, question: str):
     if project_doc.owner != user_email and not _is_admin(user_email):
         frappe.throw(_("Not authorized"), frappe.PermissionError)
 
-    sections = {}
-    if project_doc.generated_sections:
-        try:
-            sections = json.loads(project_doc.generated_sections)
-        except Exception:
-            sections = {}
-
-    section_content = sections.get(section, {}).get("content", "")
+    # Map section key to the actual DocType field name
+    section_field_map = {
+        "toc": "theory_of_change",
+        "theory_of_change": "theory_of_change",
+        "data_model": "data_model",
+        "modules": "module_specs",
+        "module_specs": "module_specs",
+        "dashboards": "dashboard_plan",
+        "dashboard_plan": "dashboard_plan",
+        "sprint_plan": "sprint_plan",
+    }
+    field_name = section_field_map.get(section, section)
+    section_content = getattr(project_doc, field_name, "") or ""
 
     context = (
-        f"Project: {project_doc.project_title} ({project_doc.organization})\n"
+        f"Project: {project_doc.project_title} ({project_doc.organisation_name or 'Unknown Org'})\n"
         f"Sector: {project_doc.sector}\n\n"
         f"Generated section '{section}':\n{section_content}\n\n"
         f"The user is asking: {question}"
@@ -194,11 +199,11 @@ def _get_project_context(slug: str, user_email: str) -> str:
         return ""
     return (
         f"Title: {doc.project_title}\n"
-        f"Organization: {doc.organization}\n"
+        f"Organization: {doc.organisation_name or 'N/A'}\n"
         f"Sector: {doc.sector}\n"
         f"Country: {doc.country or 'N/A'}\n"
-        f"Budget: USD {doc.budget_usd or 'N/A'}\n"
-        f"Duration: {doc.duration_months or 12} months\n"
+        f"Organisation Type: {doc.organisation_type or 'N/A'}\n"
+        f"Team Size: {doc.team_size or 'N/A'}\n"
         f"Description: {doc.description or 'N/A'}\n"
     )
 
