@@ -1,15 +1,91 @@
-# ── Use Frappe's official bench image — all deps pre-installed ───────────────
-FROM ghcr.io/frappe/bench:latest
+# ── Build from Debian slim — same base as official frappe/bench image ─────────
+FROM debian:bookworm-slim
 
-# Switch to root to add Redis wait tool
-USER root
-RUN apt-get update && apt-get install -y --no-install-recommends netcat-openbsd \
+ENV DEBIAN_FRONTEND=noninteractive
+
+# ── ALL system deps (sourced from github.com/frappe/frappe_docker) ────────────
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # Core
+    git curl wget sudo locales \
+    build-essential make \
+    # MariaDB / Postgres clients
+    mariadb-client \
+    default-libmysqlclient-dev \
+    libmariadb-dev \
+    # Redis
+    redis-tools \
+    # PDF / fonts
+    libssl-dev \
+    fonts-cantarell \
+    xfonts-75dpi \
+    xfonts-base \
+    libpango-1.0-0 \
+    libharfbuzz0b \
+    libpangoft2-1.0-0 \
+    libpangocairo-1.0-0 \
+    # Python build deps
+    libffi-dev \
+    libbz2-dev \
+    libsqlite3-dev \
+    libreadline-dev \
+    libncurses5-dev \
+    libncursesw5-dev \
+    libldap2-dev \
+    libsasl2-dev \
+    liblcms2-dev \
+    libtiff5-dev \
+    libwebp-dev \
+    liblzma-dev \
+    zlib1g-dev \
+    tk-dev \
+    tk8.6-dev \
+    xz-utils \
+    llvm \
+    # Other
+    pkg-config \
+    gettext-base \
+    netcat-openbsd \
+    file \
+    ca-certificates \
+    && locale-gen en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
+
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+
+# ── Python 3.11 ───────────────────────────────────────────────────────────────
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 python3.11-dev python3.11-venv python3-pip \
+    && ln -sf /usr/bin/python3.11 /usr/bin/python3 \
+    && ln -sf /usr/bin/python3.11 /usr/bin/python \
+    && rm -rf /var/lib/apt/lists/*
+
+# ── Node 18 via NodeSource ────────────────────────────────────────────────────
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g yarn \
+    && rm -rf /var/lib/apt/lists/*
+
+# ── wkhtmltopdf (same version as official Frappe image) ──────────────────────
+ARG WKHTMLTOPDF_VERSION=0.12.6.1-3
+RUN ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/') \
+    && FILE=wkhtmltox_${WKHTMLTOPDF_VERSION}.bookworm_${ARCH}.deb \
+    && wget -q https://github.com/wkhtmltopdf/packaging/releases/download/${WKHTMLTOPDF_VERSION}/${FILE} \
+    && dpkg -i ${FILE} || apt-get install -yf \
+    && rm -f ${FILE}
+
+# ── frappe user ───────────────────────────────────────────────────────────────
+RUN groupadd -g 1000 frappe \
+    && useradd --no-log-init -r -m -u 1000 -g 1000 -G sudo frappe \
+    && echo "frappe ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+# ── bench CLI ────────────────────────────────────────────────────────────────
+RUN pip3 install frappe-bench --break-system-packages
 
 USER frappe
 WORKDIR /home/frappe
 
-# ── Initialise bench with Frappe v16 ─────────────────────────────────────────
+# ── Initialise Frappe v16 bench ───────────────────────────────────────────────
 RUN bench init \
     --skip-redis-config-generation \
     --frappe-branch version-16 \
