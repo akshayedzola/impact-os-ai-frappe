@@ -1,5 +1,5 @@
-# ── Build from Debian slim — same base as official frappe/bench image ─────────
-FROM debian:bookworm-slim
+# ── python:3.12-slim-bookworm = Debian bookworm slim + Python 3.12 pre-built ──
+FROM python:3.12-slim-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -52,13 +52,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
-
-# ── Python 3.12 (Frappe v16 latest requires 3.12+ for PEP 695 type syntax) ───
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.12 python3.12-dev python3.12-venv python3-pip \
-    && ln -sf /usr/bin/python3.12 /usr/bin/python3 \
-    && ln -sf /usr/bin/python3.12 /usr/bin/python \
-    && rm -rf /var/lib/apt/lists/*
 
 # ── Node 18 via NodeSource ────────────────────────────────────────────────────
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
