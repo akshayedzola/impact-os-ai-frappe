@@ -42,6 +42,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xz-utils \
     llvm \
     # Other
+    cron \
     pkg-config \
     gettext-base \
     netcat-openbsd \
