@@ -1,33 +1,15 @@
-FROM python:3.11-slim-bookworm
+# ── Use Frappe's official bench image — all deps pre-installed ───────────────
+FROM ghcr.io/frappe/bench:latest
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-# ── System dependencies ───────────────────────────────────────────────────────
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    git curl wget sudo \
-    mariadb-client redis-tools \
-    wkhtmltopdf xvfb libfontconfig libxrender1 \
-    build-essential libssl-dev libffi-dev \
-    pkg-config \
+# Switch to root to add Redis wait tool
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
-
-# ── Node 18 ───────────────────────────────────────────────────────────────────
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g yarn \
-    && rm -rf /var/lib/apt/lists/*
-
-# ── bench CLI ────────────────────────────────────────────────────────────────
-RUN pip3 install frappe-bench
-
-# ── frappe user ──────────────────────────────────────────────────────────────
-RUN useradd -m -s /bin/bash frappe \
-    && echo "frappe ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 USER frappe
 WORKDIR /home/frappe
 
-# ── Frappe bench (downloads Frappe v16 — cached layer) ───────────────────────
+# ── Initialise bench with Frappe v16 ─────────────────────────────────────────
 RUN bench init \
     --skip-redis-config-generation \
     --frappe-branch version-16 \
@@ -35,7 +17,7 @@ RUN bench init \
 
 WORKDIR /home/frappe/frappe-bench
 
-# ── Install our custom app ────────────────────────────────────────────────────
+# ── Get our custom app ────────────────────────────────────────────────────────
 RUN bench get-app https://github.com/akshayedzola/impact-os-ai-frappe --branch main
 
 # ── Entrypoint ───────────────────────────────────────────────────────────────
