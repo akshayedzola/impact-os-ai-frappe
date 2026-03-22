@@ -1,5 +1,5 @@
-# ── python:3.12-slim-bookworm = Debian bookworm slim + Python 3.12 pre-built ──
-FROM python:3.12-slim-bookworm
+# ── python:3.14-slim-bookworm — Frappe v16.12+ requires Python>=3.14,<3.15 ───
+FROM python:3.14-slim-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
