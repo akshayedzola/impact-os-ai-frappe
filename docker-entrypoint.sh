@@ -3,13 +3,15 @@ set -e
 
 cd /home/frappe/frappe-bench
 
-# ── Env defaults ─────────────────────────────────────────────────────────────
+# ── Env defaults (try every Railway MySQL/Redis variable naming convention) ───
 SITE_NAME="${SITE_NAME:-impactos.localhost}"
-DB_HOST="${MYSQLDATABASE_HOST:-${DB_HOST:-localhost}}"
-DB_PORT="${MYSQLDATABASE_PORT:-3306}"
+DB_HOST="${MYSQLHOST:-${MYSQLDATABASE_HOST:-${DB_HOST:-localhost}}}"
+DB_PORT="${MYSQLPORT:-${MYSQLDATABASE_PORT:-3306}}"
 DB_ROOT_PASSWORD="${MYSQLPASSWORD:-${MYSQL_ROOT_PASSWORD:-frappe}}"
 REDIS_HOST="${REDISHOST:-${REDIS_HOST:-localhost}}"
-REDIS_PORT="${REDISPORT:-6379}"
+REDIS_PORT="${REDISPORT:-${REDIS_PORT:-6379}}"
+
+echo "==> Config: DB=$DB_HOST:$DB_PORT REDIS=$REDIS_HOST:$REDIS_PORT SITE=$SITE_NAME"
 
 # ── Wait for MariaDB ──────────────────────────────────────────────────────────
 echo "==> Waiting for MariaDB at $DB_HOST:$DB_PORT..."
