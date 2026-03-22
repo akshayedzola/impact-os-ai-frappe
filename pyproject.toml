@@ -21,3 +21,6 @@ build-backend = "flit_core.buildapi"
 
 [tool.flit.module]
 name = "impact_os_ai"
+
+[tool.frappe]
+frappe_version = ">=16.0.0 <17.0.0"
