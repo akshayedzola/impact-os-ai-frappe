@@ -10,15 +10,25 @@ DB_PORT="${MYSQLPORT:-${MYSQLDATABASE_PORT:-3306}}"
 DB_ROOT_PASSWORD="${MYSQLPASSWORD:-${MYSQL_ROOT_PASSWORD:-frappe}}"
 REDIS_HOST="${REDISHOST:-${REDIS_HOST:-localhost}}"
 REDIS_PORT="${REDISPORT:-${REDIS_PORT:-6379}}"
-REDIS_PASSWORD="${REDISPASSWORD:-}"
 
 echo "==> Config: DB=$DB_HOST:$DB_PORT REDIS=$REDIS_HOST:$REDIS_PORT SITE=$SITE_NAME"
 
-# ── Build Redis URL (with auth if Railway sets REDISPASSWORD) ─────────────────
-if [ -n "$REDIS_PASSWORD" ]; then
-    REDIS_BASE="redis://:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}"
+# ── Build Redis base URL ───────────────────────────────────────────────────────
+# Railway provides REDIS_URL (full URL with auth) — use it directly if available.
+# Strip any trailing /N db-number so we can append /0, /1, /2 ourselves.
+if [ -n "${REDIS_URL:-}" ]; then
+    REDIS_BASE=$(echo "$REDIS_URL" | sed 's|/[0-9]*$||')
+    echo "==> Using REDIS_URL (auth included)"
 else
-    REDIS_BASE="redis://${REDIS_HOST}:${REDIS_PORT}"
+    # Fall back to building from individual vars; try several Railway password var names
+    REDIS_PASS="${REDISPASSWORD:-${REDIS_PASSWORD:-}}"
+    if [ -n "$REDIS_PASS" ]; then
+        REDIS_BASE="redis://:${REDIS_PASS}@${REDIS_HOST}:${REDIS_PORT}"
+        echo "==> Using REDIS_PASS from env"
+    else
+        REDIS_BASE="redis://${REDIS_HOST}:${REDIS_PORT}"
+        echo "==> WARNING: no Redis password found — connecting without auth"
+    fi
 fi
 
 # ── Wait for MariaDB ──────────────────────────────────────────────────────────
@@ -38,6 +48,8 @@ done
 echo "==> Redis port open!"
 
 # ── Write common_site_config.json ─────────────────────────────────────────────
+# NOTE: do NOT include rq_username/rq_password — those break workers against
+# managed Redis (Railway) where we can't use Redis ACL namespaces.
 cat > sites/common_site_config.json << EOF
 {
     "db_host": "$DB_HOST",
@@ -78,11 +90,8 @@ else
         bench --site "$SITE_NAME" install-app impact_os_ai || true
 fi
 
-# ── Set default site (replaces deprecated currentsite.txt) ───────────────────
+# ── Set default site ──────────────────────────────────────────────────────────
 bench use "$SITE_NAME"
-
-# ── Create RQ users (needed for Redis queue auth in Frappe v16.12) ───────────
-bench create-rq-users 2>/dev/null || true
 
 # ── Start background worker ───────────────────────────────────────────────────
 echo "==> Starting background worker..."
