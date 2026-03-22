@@ -53,11 +53,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
-# ── Python 3.11 ───────────────────────────────────────────────────────────────
+# ── Python 3.12 (Frappe v16 latest requires 3.12+ for PEP 695 type syntax) ───
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.11 python3.11-dev python3.11-venv python3-pip \
-    && ln -sf /usr/bin/python3.11 /usr/bin/python3 \
-    && ln -sf /usr/bin/python3.11 /usr/bin/python \
+    python3.12 python3.12-dev python3.12-venv python3-pip \
+    && ln -sf /usr/bin/python3.12 /usr/bin/python3 \
+    && ln -sf /usr/bin/python3.12 /usr/bin/python \
     && rm -rf /var/lib/apt/lists/*
 
 # ── Node 18 via NodeSource ────────────────────────────────────────────────────
