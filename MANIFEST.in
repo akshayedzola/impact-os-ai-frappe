@@ -1,0 +1,4 @@
+include impact_os_ai/templates/*.html
+recursive-include impact_os_ai/public *
+recursive-include impact_os_ai/templates *
+recursive-include impact_os_ai/www *

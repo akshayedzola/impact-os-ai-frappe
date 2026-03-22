@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2024-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "tier",
+  "status",
+  "column_break_1",
+  "stripe_subscription_id",
+  "stripe_customer_id",
+  "current_period_start",
+  "current_period_end",
+  "section_break_1",
+  "amount_usd",
+  "currency",
+  "billing_interval"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "tier",
+   "fieldtype": "Select",
+   "label": "Tier",
+   "options": "free\nstarter\npro\nenterprise",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "active\ncanceled\npast_due\ntrialing",
+   "default": "active",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "stripe_subscription_id",
+   "fieldtype": "Data",
+   "label": "Stripe Subscription ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "stripe_customer_id",
+   "fieldtype": "Data",
+   "label": "Stripe Customer ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_period_start",
+   "fieldtype": "Datetime",
+   "label": "Current Period Start"
+  },
+  {
+   "fieldname": "current_period_end",
+   "fieldtype": "Datetime",
+   "label": "Current Period End"
+  },
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break",
+   "label": "Billing"
+  },
+  {
+   "fieldname": "amount_usd",
+   "fieldtype": "Currency",
+   "label": "Amount (USD)",
+   "options": "USD"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency",
+   "default": "USD"
+  },
+  {
+   "fieldname": "billing_interval",
+   "fieldtype": "Select",
+   "label": "Billing Interval",
+   "options": "month\nyear"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2024-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Impact OS AI",
+ "name": "IOS Subscription",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Impact OS User",
+   "if_owner": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

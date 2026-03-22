@@ -1,0 +1,103 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2024-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "full_name",
+  "organization",
+  "column_break_1",
+  "subscription_tier",
+  "credits_used",
+  "credits_limit",
+  "stripe_customer_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "organization",
+   "fieldtype": "Data",
+   "label": "Organization"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "subscription_tier",
+   "fieldtype": "Select",
+   "label": "Subscription Tier",
+   "options": "free\nstarter\npro\nenterprise",
+   "default": "free",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "credits_used",
+   "fieldtype": "Int",
+   "label": "Credits Used",
+   "default": "0"
+  },
+  {
+   "fieldname": "credits_limit",
+   "fieldtype": "Int",
+   "label": "Credits Limit",
+   "default": "10"
+  },
+  {
+   "fieldname": "stripe_customer_id",
+   "fieldtype": "Data",
+   "label": "Stripe Customer ID",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2024-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Impact OS AI",
+ "name": "IOS User Profile",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "write": 1,
+   "role": "Impact OS User",
+   "if_owner": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "full_name",
+ "track_changes": 0
+}
