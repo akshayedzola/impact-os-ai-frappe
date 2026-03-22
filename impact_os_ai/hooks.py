@@ -5,7 +5,7 @@ app_description = "ImpactOS AI — MIS Blueprint Platform powered by MAP Framewo
 app_email = "hello@edzola.com"
 app_license = "MIT"
 
-required_apps = ["frappe>=16.0.0 <17.0.0"]
+required_apps = ["frappe"]
 
 # Called after a successful Frappe session login
 on_session_creation = "impact_os_ai.impact_os_ai.api.auth.on_login_hook"

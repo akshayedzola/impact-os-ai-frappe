@@ -52,15 +52,17 @@ EOF
 
 # ── First-time site creation ──────────────────────────────────────────────────
 if [ ! -f "sites/$SITE_NAME/site_config.json" ]; then
-    echo "==> Creating site '$SITE_NAME' (first run — takes ~3 mins)..."
+    echo "==> Creating site '$SITE_NAME' (first run — takes ~15 mins)..."
 
     bench new-site "$SITE_NAME" \
         --db-host "$DB_HOST" \
         --db-port "$DB_PORT" \
         --db-root-password "$DB_ROOT_PASSWORD" \
         --admin-password "${ADMIN_PASSWORD:-admin123}" \
-        --mariadb-user-host-login-scope='%' \
-        --install-app impact_os_ai
+        --mariadb-user-host-login-scope='%'
+
+    echo "==> Installing impact_os_ai..."
+    bench --site "$SITE_NAME" install-app impact_os_ai
 
     bench --site "$SITE_NAME" set-config openai_api_key  "${OPENAI_API_KEY:-}"
     bench --site "$SITE_NAME" set-config jwt_secret       "${JWT_SECRET:-impactos-change-this}"
@@ -70,6 +72,10 @@ if [ ! -f "sites/$SITE_NAME/site_config.json" ]; then
 else
     echo "==> Site exists — running migrations..."
     bench --site "$SITE_NAME" migrate || true
+
+    # Ensure impact_os_ai is installed even if it was missing on first run
+    bench --site "$SITE_NAME" list-apps 2>/dev/null | grep -q "impact_os_ai" || \
+        bench --site "$SITE_NAME" install-app impact_os_ai || true
 fi
 
 # ── Set default site (replaces deprecated currentsite.txt) ───────────────────
