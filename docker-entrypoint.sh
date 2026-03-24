@@ -58,7 +58,8 @@ cat > sites/common_site_config.json << EOF
     "redis_queue": "${REDIS_BASE}/1",
     "redis_socketio": "${REDIS_BASE}/2",
     "socketio_port": 9000,
-    "developer_mode": 1
+    "developer_mode": 1,
+    "default_site": "$SITE_NAME"
 }
 EOF
 
