@@ -100,7 +100,8 @@ bench worker --queue long,default &
 WORKER_PID=$!
 
 # ── Start Frappe (v16.12 removed --host flag; binds 0.0.0.0 by default) ──────
-echo "==> Starting Frappe on port 8000..."
-bench serve --port 8000
+SERVE_PORT="${PORT:-8000}"
+echo "==> Starting Frappe on port $SERVE_PORT..."
+bench serve --port "$SERVE_PORT"
 
 kill $WORKER_PID 2>/dev/null || true
