@@ -88,8 +88,8 @@ RUN bench init \
 WORKDIR /home/frappe/frappe-bench
 
 # ── Get our custom app ── (bust cache when app code changes) ─────────────────
+# cache-bust: workspace fixture 2024-03-27
 RUN bench get-app https://github.com/akshayedzola/impact-os-ai-frappe --branch main
-# cache-bust: required_apps fix v2
 
 # ── Entrypoint ───────────────────────────────────────────────────────────────
 COPY --chown=frappe:frappe docker-entrypoint.sh /home/frappe/docker-entrypoint.sh
