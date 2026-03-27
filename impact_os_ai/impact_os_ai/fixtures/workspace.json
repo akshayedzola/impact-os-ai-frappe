@@ -1,0 +1,91 @@
+[
+ {
+  "charts": [],
+  "content": "[]",
+  "creation": "2024-01-01 00:00:00.000000",
+  "doctype": "Workspace",
+  "hide_custom": 0,
+  "is_default": 1,
+  "label": "Impact OS AI",
+  "links": [
+   {
+    "hidden": 0,
+    "is_query_report": 0,
+    "label": "IOS Project",
+    "link_count": 0,
+    "link_to": "IOS Project",
+    "link_type": "DocType",
+    "onboard": 1,
+    "type": "Link"
+   },
+   {
+    "hidden": 0,
+    "is_query_report": 0,
+    "label": "IOS Template",
+    "link_count": 0,
+    "link_to": "IOS Template",
+    "link_type": "DocType",
+    "onboard": 0,
+    "type": "Link"
+   },
+   {
+    "hidden": 0,
+    "is_query_report": 0,
+    "label": "IOS User Profile",
+    "link_count": 0,
+    "link_to": "IOS User Profile",
+    "link_type": "DocType",
+    "onboard": 0,
+    "type": "Link"
+   },
+   {
+    "hidden": 0,
+    "is_query_report": 0,
+    "label": "IOS Chat Message",
+    "link_count": 0,
+    "link_to": "IOS Chat Message",
+    "link_type": "DocType",
+    "onboard": 0,
+    "type": "Link"
+   },
+   {
+    "hidden": 0,
+    "is_query_report": 0,
+    "label": "IOS Subscription",
+    "link_count": 0,
+    "link_to": "IOS Subscription",
+    "link_type": "DocType",
+    "onboard": 0,
+    "type": "Link"
+   }
+  ],
+  "module": "Impact OS AI",
+  "modified": "2024-01-01 00:00:00.000000",
+  "modified_by": "Administrator",
+  "name": "Impact OS AI",
+  "owner": "Administrator",
+  "pin_to_bottom": 0,
+  "pin_to_top": 0,
+  "public": 1,
+  "restrict_to_domain": "",
+  "roles": [],
+  "sequence_id": 1.0,
+  "shortcuts": [
+   {
+    "color": "Blue",
+    "format": "{} Projects",
+    "label": "IOS Project",
+    "link_to": "IOS Project",
+    "type": "DocType"
+   },
+   {
+    "color": "Green",
+    "format": "{} Templates",
+    "label": "IOS Template",
+    "link_to": "IOS Template",
+    "type": "DocType"
+   }
+  ],
+  "title": "Impact OS AI"
+ }
+]

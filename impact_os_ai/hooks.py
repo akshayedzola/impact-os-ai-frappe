@@ -7,5 +7,10 @@ app_license = "MIT"
 
 required_apps = ["frappe"]
 
+# Fixtures — exports/imports Workspace so ImpactOS AI appears in the Frappe desk
+fixtures = [
+    {"doctype": "Workspace", "filters": [["module", "=", "Impact OS AI"]]}
+]
+
 # Called after a successful Frappe session login
 on_session_creation = "impact_os_ai.impact_os_ai.api.auth.on_login_hook"
