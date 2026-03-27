@@ -33,13 +33,32 @@ def verify_jwt_token(token: str) -> dict:
 
 
 def get_current_user_from_token():
-    """Extract and validate the Bearer token from the Authorization header."""
+    """
+    Resolve the current user via:
+      1. Custom X-IOS-Token header (preferred for frontend clients — avoids
+         Frappe intercepting the standard Authorization header)
+      2. Authorization: Bearer <jwt>  (fallback, may be intercepted by Frappe)
+      3. Active Frappe session (desk / browser users)
+    """
+    # 1. Custom header (used by Next.js frontend)
+    ios_token = frappe.get_request_header("X-IOS-Token", "")
+    if ios_token:
+        payload = verify_jwt_token(ios_token)
+        return payload.get("sub")
+
+    # 2. Standard Bearer header
     auth_header = frappe.get_request_header("Authorization", "")
-    if not auth_header or not auth_header.startswith("Bearer "):
-        frappe.throw(_("Missing or invalid Authorization header"), frappe.AuthenticationError)
-    token = auth_header[7:]
-    payload = verify_jwt_token(token)
-    return payload.get("sub")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header[7:]
+        payload = verify_jwt_token(token)
+        return payload.get("sub")
+
+    # 3. Active Frappe session (desk users / API key auth already handled by Frappe)
+    session_user = frappe.session.user if frappe.session else None
+    if session_user and session_user != "Guest":
+        return session_user
+
+    frappe.throw(_("Authentication required: provide X-IOS-Token header or log in"), frappe.AuthenticationError)
 
 
 @frappe.whitelist(allow_guest=True)

@@ -88,7 +88,7 @@ RUN bench init \
 WORKDIR /home/frappe/frappe-bench
 
 # ── Get our custom app ── (bust cache when app code changes) ─────────────────
-# cache-bust: workspace fixture 2024-03-27
+# cache-bust: session auth fallback 2026-03-27
 RUN bench get-app https://github.com/akshayedzola/impact-os-ai-frappe --branch main
 
 # ── Entrypoint ───────────────────────────────────────────────────────────────
